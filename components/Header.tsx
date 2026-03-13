@@ -1,18 +1,26 @@
 import { Bell } from "lucide-react";
-import Image from "next/image";
 
-export default function Header() {
+interface HeaderProps {
+  profilePhoto?: string;
+  fullName?: string;
+}
+
+export default function Header({ profilePhoto, fullName = "User" }: HeaderProps) {
   return (
     <header className="flex items-center justify-between pt-12 pb-6 px-6">
       {/* Avatar portrait */}
       <div className="relative h-12 w-12 rounded-xl bg-[#b3a1f8] overflow-hidden flex-shrink-0 shadow-sm border border-white/20">
-        <Image
-          src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop"
-          alt="Melinda"
-          width={48}
-          height={48}
-          className="object-cover w-full h-full"
-        />
+        {profilePhoto ? (
+          <img
+            src={profilePhoto}
+            alt={fullName}
+            className="object-cover w-full h-full"
+          />
+        ) : (
+          <div className="w-full h-full bg-purple-200 flex items-center justify-center text-xl font-bold text-purple-600 uppercase">
+            {fullName.charAt(0)}
+          </div>
+        )}
       </div>
 
       {/* Notification Icon */}

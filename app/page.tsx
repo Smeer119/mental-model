@@ -12,14 +12,14 @@ export default async function Home() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Get first name only (e.g. "Veeresh Hindiholi" → "Veeresh")
   const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
   const firstName = fullName.split(' ')[0];
+  const profilePhoto = user?.user_metadata?.avatar_url;
 
   return (
     <>
     <div className="pb-24">
-      <Header />
+      <Header profilePhoto={profilePhoto} fullName={fullName} />
       
       <div className="px-6 mb-5">
         <h1 className="text-[1.65rem] text-gray-900 font-medium leading-tight">
