@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 
 // Strict integer validation between 0 and 3
-const responseSchema = z.record(z.coerce.number().int().min(0).max(3))
+const responseSchema = z.record(z.string(), z.coerce.number().int().min(0).max(3))
 
 // The payload sent from the client
 const assessmentPayloadSchema = z.object({
