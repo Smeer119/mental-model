@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { motion } from 'framer-motion'
 import { Mail, AlertCircle } from 'lucide-react'
+import FinnMascot from '@/components/FinnMascot'
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
@@ -45,27 +46,12 @@ export default function LoginPage() {
         transition={{ duration: 0.8, ease: 'easeOut' }}
         className="w-full max-w-md bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-2xl shadow-purple-500/10 border border-white/50 relative z-10"
       >
-        {/* Logo Section (Finn the Blob) */}
+        {/* Logo Section (Finn the Mascot) */}
         <div className="flex flex-col items-center mb-8">
-          <div className="relative w-32 h-32 flex flex-col items-center justify-center mb-4">
-            <motion.div
-              animate={{ y: [0, -5, 0], scale: [1, 1.02, 1] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-20 h-28 bg-gradient-to-b from-[#a3b2f8] via-[#8fa3f8] to-[#714efe] rounded-t-full shadow-lg flex flex-col items-center pt-8"
-            >
-              {/* Eyes */}
-              <div className="flex space-x-4 mb-2">
-                <div className="w-3 h-3 bg-gray-900 rounded-full" />
-                <div className="w-3 h-3 bg-gray-900 rounded-full" />
-              </div>
-              {/* Smile */}
-              <div className="w-4 h-2 border-b-[2px] border-gray-900 rounded-b-full" />
-            </motion.div>
-            <div className="w-28 h-4 bg-black/10 rounded-full blur-md -mt-2" />
-          </div>
+          <FinnMascot pose="happy" size={140} className="mb-6" />
 
-          <h1 className="text-3xl font-bold text-[#1c1c1e] tracking-tight mb-2">MentalWell</h1>
-          <p className="text-gray-500 font-medium">Your personal mental health companion</p>
+          <h1 className="text-4xl font-black text-[#1c1c1e] tracking-tight mb-2">MentalWell</h1>
+          <p className="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Your personal health companion</p>
         </div>
 
         {/* Error Message */}

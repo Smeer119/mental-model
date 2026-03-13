@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 import Header from "@/components/Header";
 import MoodSelector from "@/components/MoodSelector";
 import WellnessRecommendations from "@/components/WellnessRecommendations";
@@ -6,10 +7,15 @@ import HeroCard from "@/components/HeroCard";
 import AICard from "@/components/AICard";
 import EnergySection from "@/components/EnergySection";
 import BottomNav from "@/components/BottomNav";
+import FinnTip from "@/components/FinnTip";
 
 export default async function Home() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/onboarding');
+  }
 
   const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
   const firstName = fullName.split(' ')[0];
@@ -44,6 +50,7 @@ export default async function Home() {
 
       <MoodSelector lastMood={lastMood} />
       
+      <FinnTip tip="Slow deep breaths can lower your heart rate in less than 60 seconds. Want to try a quick game?" />
       <div className="mt-4 mb-2">
         <h2 className="px-6 text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Daily Tips</h2>
         <WellnessRecommendations />
@@ -51,6 +58,15 @@ export default async function Home() {
       <HeroCard />
       <AICard />
       <EnergySection />
+      
+      {/* Bottom Logo */}
+      <div className="mt-12 mb-12 flex justify-center px-6">
+        <img 
+          src="/bottom-logo.png" 
+          alt="Brand Logo" 
+          className="w-full max-w-[320px] opacity-80 hover:opacity-100 transition-opacity" 
+        />
+      </div>
       
       <BottomNav />
     </div>

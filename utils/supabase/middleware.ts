@@ -31,25 +31,21 @@ export async function updateSession(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake can make it very hard to debug
   // issues with users being randomly logged out.
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
+  const isAuthPage = request.nextUrl.pathname === '/login' ||
+                     request.nextUrl.pathname.startsWith('/onboarding') ||
                      request.nextUrl.pathname.startsWith('/auth')
 
-  if (!isAuthPage) {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
 
-      if (!user) {
-        // no user, potentially respond by redirecting the user to the login page
-        const url = request.nextUrl.clone()
-        url.pathname = '/login'
-        return NextResponse.redirect(url)
-      }
-    } catch (e) {
-      // If Supabase fetch fails (e.g. network issue), we log it but don't crash the request
-      console.error('Middleware auth error:', e)
+    if (!user && !isAuthPage) {
+      const url = request.nextUrl.clone()
+      // If hitting the root, go to onboarding, otherwise go to login
+      url.pathname = request.nextUrl.pathname === '/' ? '/onboarding' : '/login'
+      return NextResponse.redirect(url)
     }
+  } catch (e) {
+    console.error('Middleware auth error:', e)
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
