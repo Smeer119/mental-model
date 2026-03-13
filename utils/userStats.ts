@@ -18,18 +18,24 @@ const moodConfig: Record<string, { level: number; color: string; emoji: string }
   Angry: { level: 1, color: 'bg-[#ffe0ef]', emoji: '😠' },
 }
 
-export async function getUserStats(userId: string): Promise<UserStats> {
+export async function getUserStats(userId: string, timeRange: string = 'week'): Promise<UserStats> {
   const supabase = await createClient()
 
-  // Get last 7 days start date
-  const sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  // Calculate start date based on timeRange
+  const startDate = new Date()
+  let daysToFetch = 7
+  if (timeRange === 'day') Object.assign(startDate, new Date()) // Will only fetch today
+  if (timeRange === 'week') daysToFetch = 7
+  if (timeRange === 'month') daysToFetch = 30
+
+  startDate.setDate(startDate.getDate() - daysToFetch + 1)
+  startDate.setHours(0, 0, 0, 0)
 
   const { data: entries } = await supabase
     .from('mood_entries')
     .select('mood, created_at')
     .eq('user_id', userId)
-    .gte('created_at', sevenDaysAgo.toISOString())
+    .gte('created_at', startDate.toISOString())
     .order('created_at', { ascending: true })
 
   if (!entries || entries.length === 0) {
@@ -76,38 +82,56 @@ export async function getUserStats(userId: string): Promise<UserStats> {
       }
     })
 
-  // 3. Calculate Trend Data (Last 7 days aligned to Mon-Sun format)
-  // Group by day of week
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  const latestByDay = new Map<string, any>()
-  
-  entries.forEach(entry => {
-    const d = new Date(entry.created_at)
-    // Overwrite with latest entry for that day
-    latestByDay.set(dayNames[d.getDay()], entry)
-  })
-
-  // Generate sequence of last 7 days ending on today
+  // 3. Calculate Trend Data
   const trendData = []
-  const todayIdx = new Date().getDay()
-  for (let i = 6; i >= 0; i--) {
-    const dayIdx = (todayIdx - i + 7) % 7
-    const dayName = dayNames[dayIdx]
-    const entry = latestByDay.get(dayName)
+  
+  if (timeRange === 'day') {
+    // For today, show chronological entries by hour
+    const todayEntries = entries.filter(e => new Date(e.created_at).toDateString() === new Date().toDateString())
     
-    if (entry) {
+    // Show up to 7 most recent entries today
+    const recentToday = todayEntries.slice(-7)
+    
+    recentToday.forEach((entry, i) => {
+      const d = new Date(entry.created_at)
       trendData.push({
-        day: dayName,
+        day: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         level: moodConfig[entry.mood]?.level || 3,
         label: entry.mood,
-        highlight: i === 0, // Highlight today
+        highlight: i === recentToday.length - 1,
       })
-    } else {
+    })
+
+    // Pad if empty
+    if (trendData.length === 0) {
+      trendData.push({ day: 'Now', level: 0, label: '', highlight: true })
+    }
+  } else {
+    // Week or Month: group by days
+    const latestByDay = new Map<string, any>()
+    entries.forEach(entry => {
+      const d = new Date(entry.created_at)
+      // Key format: YYYY-MM-DD
+      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+      latestByDay.set(key, entry)
+    })
+
+    for (let i = daysToFetch - 1; i >= 0; i--) {
+      const d = new Date()
+      d.setDate(d.getDate() - i)
+      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+      const entry = latestByDay.get(key)
+      
+      let dayName = d.toLocaleDateString('en-US', { weekday: 'short' })
+      if (timeRange === 'month') {
+        dayName = d.getDate().toString() // "1", "2"... "31"
+      }
+
       trendData.push({
         day: dayName,
-        level: 0,
-        label: '',
-        highlight: i === 0,
+        level: entry ? (moodConfig[entry.mood]?.level || 3) : 0,
+        label: entry ? entry.mood : '',
+        highlight: i === 0, // Highlight today
       })
     }
   }

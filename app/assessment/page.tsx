@@ -129,7 +129,7 @@ export default function AssessmentPage() {
           )
 
           return card.link || card.href ? (
-            <Link key={card.id} href={card.link || card.href || '#'}>
+            <Link key={card.id} href={card.link || card.href || '#'} className="block">
               {CardContent}
             </Link>
           ) : (

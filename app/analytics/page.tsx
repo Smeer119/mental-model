@@ -9,15 +9,23 @@ import { ChevronDown } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getUserStats } from "@/utils/userStats";
+import AnalyticsTimeToggle from "@/components/AnalyticsTimeToggle";
 
-export default async function AnalyticsPage() {
+export default async function AnalyticsPage(
+  props: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  }
+) {
+  const searchParams = await props.searchParams;
+  const timeRange = typeof searchParams.timeRange === 'string' ? searchParams.timeRange : 'week';
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
 
   const [stats, { data: assessments }] = await Promise.all([
-    getUserStats(user.id),
+    getUserStats(user.id, timeRange),
     supabase
       .from('clinical_assessments')
       .select('id, created_at, total_score, assessment_type')
@@ -33,10 +41,7 @@ export default async function AnalyticsPage() {
           <p className="text-sm text-gray-400 font-medium mb-0.5">Overview</p>
           <h1 className="text-2xl font-bold text-gray-900">Your Progress</h1>
         </div>
-        <button className="flex items-center gap-1.5 bg-white px-4 py-2 rounded-2xl shadow-sm text-sm font-semibold text-gray-700 border border-gray-100">
-          This week
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </button>
+        <AnalyticsTimeToggle />
       </div>
 
       {/* Mood Emoji Row */}
