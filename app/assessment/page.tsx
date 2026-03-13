@@ -68,7 +68,10 @@ const assessmentCards = [
 
 export default function AssessmentPage() {
   return (
-    <div className="pb-28 min-h-screen bg-slate-50">
+    <div className="pb-28 min-h-screen bg-slate-50 relative overflow-hidden">
+      {/* Background Beamlight */}
+      <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-gradient-to-bl from-green-400/30 to-emerald-400/10 rounded-full blur-[80px] -z-10 pointer-events-none" />
+      
       {/* Header */}
       <div className="pt-10 px-6 mb-6 flex items-start justify-between">
         <div>
@@ -82,8 +85,8 @@ export default function AssessmentPage() {
           <p className="text-slate-500 text-sm mt-1">Track your symptoms over time</p>
         </div>
         
-        <Link href="/assessment/games" className="w-12 h-12 bg-white shadow-sm border border-slate-100 rounded-2xl flex items-center justify-center shrink-0 hover:bg-slate-50 hover:shadow-md transition-all">
-          <Gamepad2 className="w-6 h-6 text-blue-500" />
+        <Link href="/assessment/games" className="w-12 h-12 bg-green-400 shadow-sm shadow-green-400/30 rounded-2xl flex items-center justify-center shrink-0 hover:bg-green-500 hover:shadow-md transition-all">
+          <Gamepad2 className="w-6 h-6 text-white" />
         </Link>
       </div>
 
@@ -122,8 +125,8 @@ export default function AssessmentPage() {
             </motion.div>
           )
 
-          return card.link || card.href ? (
-            <Link key={card.id} href={card.link || card.href || '#'} className="block">
+          return card.href ? (
+            <Link key={card.id} href={card.href || '#'} className="block">
               {CardContent}
             </Link>
           ) : (

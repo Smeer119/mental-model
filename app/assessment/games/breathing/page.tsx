@@ -115,7 +115,10 @@ export default function BreathingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#efebf0] flex flex-col font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#efebf0] flex flex-col font-sans overflow-hidden relative">
+      {/* Background Beamlight */}
+      <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-gradient-to-bl from-cyan-400/30 to-blue-400/10 rounded-full blur-[80px] -z-10 pointer-events-none" />
+      
       {/* Header */}
       <div className="pt-8 px-6 flex items-center justify-between">
         <Link href="/assessment/games" className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">

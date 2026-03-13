@@ -24,11 +24,41 @@ const games = [
     color: 'from-purple-400 to-pink-400',
     link: '/assessment/games/grounding',
   },
+  {
+    id: 'bubble',
+    title: 'Bubble Wrap Pop',
+    description: 'Soothing digital bubble wrap logic to melt your stress away.',
+    emoji: '🫧',
+    icon: Gamepad2,
+    color: 'from-sky-300 to-indigo-300',
+    link: '/assessment/games/bubble',
+  },
+  {
+    id: 'shredder',
+    title: 'Worry Shredder',
+    description: 'Type down your anxieties and visually destroy them.',
+    emoji: '📄',
+    icon: Gamepad2,
+    color: 'from-rose-400 to-red-400',
+    link: '/assessment/games/shredder',
+  },
+  {
+    id: 'stones',
+    title: 'Zen Stones',
+    description: 'Carefully stack digital stones to find balance and focus.',
+    emoji: '🪨',
+    icon: Gamepad2,
+    color: 'from-stone-400 to-stone-600',
+    link: '/assessment/games/stones',
+  },
 ]
 
 export default function GamesPage() {
   return (
-    <div className="pb-28 min-h-screen bg-[#efebf0]">
+    <div className="pb-28 min-h-screen bg-[#efebf0] relative overflow-hidden">
+      {/* Background Beamlight */}
+      <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-gradient-to-bl from-blue-400/30 to-purple-400/10 rounded-full blur-[80px] -z-10 pointer-events-none" />
+      
       {/* Header */}
       <div className="pt-10 px-6 mb-8">
         <div className="flex items-center gap-4 mb-6">
