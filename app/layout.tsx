@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Outfit, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body suppressHydrationWarning className={`${outfit.variable} font-sans antialiased text-[#1c1c1e]`}>
         <div className="mx-auto max-w-md min-h-screen bg-[#efebf0] relative shadow-2xl overflow-hidden">
           {children}

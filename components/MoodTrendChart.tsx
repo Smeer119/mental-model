@@ -2,20 +2,22 @@
 
 import { motion } from 'framer-motion'
 
-const moodData = [
-  { day: 'Mon', level: 2, label: 'Neutral' },
-  { day: 'Tue', level: 3, label: 'Calm' },
-  { day: 'Wed', level: 1, label: 'Stressed' },
-  { day: 'Thu', level: 2, label: 'Neutral' },
-  { day: 'Fri', level: 3, label: 'Calm' },
-  { day: 'Sat', level: 4, label: 'Excited' },
-  { day: 'Sun', level: 5, label: 'Calm', highlight: true },
-]
+export type TrendDataPoint = {
+  day: string
+  level: number
+  label: string
+  highlight: boolean
+}
+
+interface MoodTrendChartProps {
+  trendData: TrendDataPoint[]
+  weeklyTrendPercentage: string
+}
 
 const maxLevel = 5
-const moodLabels = ['', 'Stressed', 'Neutral', 'Calm', 'Excited', 'Calm']
+const moodLabels = ['', 'Stressed', 'Neutral', 'Calm', 'Excited', 'Happy']
 
-export default function MoodTrendChart() {
+export default function MoodTrendChart({ trendData = [], weeklyTrendPercentage = '0%' }: MoodTrendChartProps) {
   return (
     <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-50">
       {/* Header */}
@@ -24,7 +26,7 @@ export default function MoodTrendChart() {
           <h2 className="text-xl font-bold text-gray-900 mb-1">Mood Trend</h2>
         </div>
         <div className="bg-[#714efe] text-white text-sm font-bold px-4 py-1.5 rounded-full">
-          72% Calm
+          {weeklyTrendPercentage}
         </div>
       </div>
 
@@ -39,8 +41,8 @@ export default function MoodTrendChart() {
 
         {/* Bars */}
         <div className="flex-1 flex items-end gap-2">
-          {moodData.map((item, i) => (
-            <div key={item.day} className="flex-1 flex flex-col items-center gap-1">
+          {trendData.map((item, i) => (
+            <div key={item.day + i} className="flex-1 flex flex-col items-center gap-1">
               <motion.div
                 initial={{ height: 0 }}
                 animate={{ height: `${(item.level / maxLevel) * 128}px` }}

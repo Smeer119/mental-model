@@ -5,6 +5,7 @@ import TopEmotions from "@/components/TopEmotions";
 import BottomNav from "@/components/BottomNav";
 import { LogOut, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { getUserStats } from "@/utils/userStats";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -17,6 +18,8 @@ export default async function ProfilePage() {
   const profilePhoto = user.user_metadata.avatar_url;
   const fullName = user.user_metadata.full_name || "User";
   const email = user.email;
+
+  const stats = await getUserStats(user.id);
 
   const handleLogout = async () => {
     'use server'
@@ -63,8 +66,8 @@ export default async function ProfilePage() {
       {/* Stats Cards Section */}
       <div className="px-6 space-y-4">
         <div className="flex space-x-4">
-          <WeeklyCheckIn />
-          <TopEmotions />
+          <WeeklyCheckIn daysLogged={stats.weeklyCheckIns} />
+          <TopEmotions emotions={stats.topEmotions} />
         </div>
 
         {/* Placeholder for more settings/stats */}
