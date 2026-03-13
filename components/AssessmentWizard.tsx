@@ -10,17 +10,17 @@ import { ChevronRight, ArrowLeft, PhoneCall, AlertTriangle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 // We require all questions to be answered (0-3) before continuing
-const buildSchema = (numQuestions: number) => {
+const buildSchema = (numQuestions: number, maxScore: number = 4) => {
   const shape: Record<string, z.ZodTypeAny> = {}
   for (let i = 1; i <= numQuestions; i++) {
-    shape[`q${i}`] = z.coerce.number().int().min(0).max(3)
+    shape[`q${i}`] = z.coerce.number().int().min(0).max(maxScore)
   }
   return z.object(shape)
 }
 
 const QUESTIONS_PER_PAGE = 1
 
-type AssessmentType = 'PHQ9' | 'GAD7'
+export type AssessmentType = 'PHQ9' | 'GAD7' | 'PSS4' | 'ISI' | 'SWEMWBS'
 
 interface Question {
   id: string
@@ -49,12 +49,71 @@ const GAD7_QUESTIONS: Question[] = [
   { id: 'q7', text: 'Feeling afraid, as if something awful might happen?' },
 ]
 
-const OPTIONS = [
+const PHQ9_OPTIONS = [
   { value: 0, label: 'Not at all' },
   { value: 1, label: 'Several days' },
   { value: 2, label: 'More than half the days' },
   { value: 3, label: 'Nearly every day' },
 ]
+
+const PSS4_QUESTIONS: Question[] = [
+  { id: 'q1', text: 'In the last month, how often have you felt that you were unable to control the important things in your life?' },
+  { id: 'q2', text: 'In the last month, how often have you felt confident about your ability to handle your personal problems?' },
+  { id: 'q3', text: 'In the last month, how often have you felt that things were going your way?' },
+  { id: 'q4', text: 'In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?' },
+]
+
+const PSS4_OPTIONS = [
+  { value: 0, label: 'Never' },
+  { value: 1, label: 'Almost Never' },
+  { value: 2, label: 'Sometimes' },
+  { value: 3, label: 'Fairly Often' },
+  { value: 4, label: 'Very Often' },
+]
+
+const ISI_QUESTIONS: Question[] = [
+  { id: 'q1', text: 'Difficulty falling asleep?' },
+  { id: 'q2', text: 'Difficulty staying asleep?' },
+  { id: 'q3', text: 'Problem waking up too early?' },
+  { id: 'q4', text: 'How satisfied/dissatisfied are you with your current sleep pattern?' },
+  { id: 'q5', text: 'How noticeable to others do you think your sleep problem is in terms of impairing the quality of your life?' },
+  { id: 'q6', text: 'How worried/distressed are you about your current sleep problem?' },
+  { id: 'q7', text: 'To what extent do you consider your sleep problem to INTERFERE with your daily functioning?' },
+]
+
+const ISI_OPTIONS = [
+  { value: 0, label: 'None / Very Satisfied / Not at all' },
+  { value: 1, label: 'Mild / Satisfied / A little' },
+  { value: 2, label: 'Moderate / Neutral / Somewhat' },
+  { value: 3, label: 'Severe / Dissatisfied / Much' },
+  { value: 4, label: 'Very Severe / Very Dissatisfied / Very much' },
+]
+
+const SWEMWBS_QUESTIONS: Question[] = [
+  { id: 'q1', text: 'I\'ve been feeling optimistic about the future' },
+  { id: 'q2', text: 'I\'ve been feeling useful' },
+  { id: 'q3', text: 'I\'ve been feeling relaxed' },
+  { id: 'q4', text: 'I\'ve been dealing with problems well' },
+  { id: 'q5', text: 'I\'ve been thinking clearly' },
+  { id: 'q6', text: 'I\'ve been feeling close to other people' },
+  { id: 'q7', text: 'I\'ve been able to make up my own mind about things' },
+]
+
+const SWEMWBS_OPTIONS = [
+  { value: 1, label: 'None of the time' },
+  { value: 2, label: 'Rarely' },
+  { value: 3, label: 'Some of the time' },
+  { value: 4, label: 'Often' },
+  { value: 5, label: 'All of the time' },
+]
+
+const ASSESSMENT_CONFIG = {
+  PHQ9: { title: 'Depression Screen', prompt: 'Over the last 2 weeks, how often have you been bothered by this?', questions: PHQ9_QUESTIONS, options: PHQ9_OPTIONS, maxScore: 3 },
+  GAD7: { title: 'Anxiety Screen', prompt: 'Over the last 2 weeks, how often have you been bothered by this?', questions: GAD7_QUESTIONS, options: PHQ9_OPTIONS, maxScore: 3 },
+  PSS4: { title: 'Stress Screen (PSS-4)', prompt: 'For each question choose from the following alternatives:', questions: PSS4_QUESTIONS, options: PSS4_OPTIONS, maxScore: 4 },
+  ISI: { title: 'Insomnia Severity Index', prompt: 'Please rate your sleep over the LAST 2 WEEKS:', questions: ISI_QUESTIONS, options: ISI_OPTIONS, maxScore: 4 },
+  SWEMWBS: { title: 'Wellbeing Scale', prompt: 'Below are some statements about feelings and thoughts. Please tick the box that best describes your experience of each over the last 2 weeks:', questions: SWEMWBS_QUESTIONS, options: SWEMWBS_OPTIONS, maxScore: 5 },
+}
 
 interface AssessmentWizardProps {
   type: AssessmentType
@@ -62,8 +121,9 @@ interface AssessmentWizardProps {
 
 export default function AssessmentWizard({ type }: AssessmentWizardProps) {
   const router = useRouter()
-  const questions = type === 'PHQ9' ? PHQ9_QUESTIONS : GAD7_QUESTIONS
-  const schema = buildSchema(questions.length)
+  const config = ASSESSMENT_CONFIG[type]
+  const questions = config.questions
+  const schema = buildSchema(questions.length, config.maxScore)
   
   const [step, setStep] = useState(0)
   const [crisisMode, setCrisisMode] = useState(false)
@@ -175,7 +235,7 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <span className="text-sm font-bold text-gray-400 tracking-widest uppercase">
-            {type === 'PHQ9' ? 'Depression Screen' : 'Anxiety Screen'}
+            {config.title}
           </span>
           <div className="w-12 h-12" /> {/* Spacer */}
         </div>
@@ -213,12 +273,12 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
                     {q.text}
                   </h1>
                   {startIdx === 0 && (
-                     <p className="text-gray-500 mt-3 md:mt-4 text-base sm:text-lg md:text-xl font-medium">Over the last 2 weeks, how often have you been bothered by this?</p>
+                     <p className="text-gray-500 mt-3 md:mt-4 text-base sm:text-lg md:text-xl font-medium">{config.prompt}</p>
                   )}
                 </div>
                 
                 <div className="space-y-4" role="radiogroup" aria-labelledby={`question-${q.id}`}>
-                  {OPTIONS.map((opt, optIdx) => {
+                  {config.options.map((opt, optIdx) => {
                     const isSelected = String(watch(q.id)) === String(opt.value)
                     const letter = String.fromCharCode(65 + optIdx) // A, B, C, D
                     

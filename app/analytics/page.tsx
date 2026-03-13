@@ -5,11 +5,12 @@ import WeeklyReflection from "@/components/WeeklyReflection";
 import GamesActivity from "@/components/GamesActivity";
 import BottomNav from "@/components/BottomNav";
 import ClinicalHistoryChart from "@/components/ClinicalHistoryChart";
-import { ChevronDown } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { getUserStats } from "@/utils/userStats";
+import { getUserActivity } from "@/utils/activity";
 import AnalyticsTimeToggle from "@/components/AnalyticsTimeToggle";
+import MindfulnessRings from "@/components/MindfulnessRings";
 
 export default async function AnalyticsPage(
   props: {
@@ -24,8 +25,9 @@ export default async function AnalyticsPage(
 
   if (!user) redirect("/login");
 
-  const [stats, { data: assessments }] = await Promise.all([
+  const [stats, activity, { data: assessments }] = await Promise.all([
     getUserStats(user.id, timeRange),
+    getUserActivity(user.id),
     supabase
       .from('clinical_assessments')
       .select('id, created_at, total_score, assessment_type')
@@ -44,15 +46,13 @@ export default async function AnalyticsPage(
         <AnalyticsTimeToggle />
       </div>
 
-      {/* Mood Emoji Row */}
+      {/* Mindfulness Habit Rings */}
       <div className="px-6 mb-4">
-        <div className="flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-2xl px-4 py-3 w-fit">
-          <span className="text-2xl">{stats.topEmotions[0]?.emoji || '😌'}</span>
-          <div>
-            <p className="text-xs text-gray-400 font-medium">Top mood</p>
-            <p className="text-sm font-bold text-gray-800">{stats.topEmotions[0]?.name || 'Neutral'}</p>
-          </div>
-        </div>
+        <MindfulnessRings 
+           moods={activity.summaryCounts.moods}
+           games={activity.summaryCounts.games}
+           assessments={activity.summaryCounts.assessments}
+        />
       </div>
 
       {/* Mood Trend Chart */}

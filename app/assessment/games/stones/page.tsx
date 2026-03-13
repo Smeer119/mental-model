@@ -6,6 +6,8 @@ import { ChevronLeft, RefreshCw, Star } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
+import StreakNotification from '@/components/StreakNotification'
+import BadgeUnlock from '@/components/BadgeUnlock'
 
 const STONES = [
   { w: "w-40", h: "h-14", color: "bg-stone-600", border: 'border-stone-400', mass: 1 },
@@ -21,6 +23,9 @@ export default function ZenStonesPage() {
   const [duration, setDuration] = useState(0)
   const [showSummary, setShowSummary] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
+  const [showStreak, setShowStreak] = useState(false)
+  const [showBadge, setShowBadge] = useState(false)
+  const [currentStreak, setCurrentStreak] = useState(0)
   const supabase = createClient()
 
   useEffect(() => {
@@ -61,7 +66,17 @@ export default function ZenStonesPage() {
           breaths_completed: STONES.length,
           duration_seconds: duration,
         }
-        await supabase.from('game_logs').insert(gameData)
+        const { error } = await supabase.from('game_logs').insert(gameData)
+        
+        // Simulate streak/badge logic for demo
+        // In a real app we'd fetch this or calculate it
+        setCurrentStreak(prev => (prev || 0) + 1)
+        setShowStreak(true)
+        
+        // 1 in 3 chance of badge for demo
+        if (Math.random() > 0.6) {
+          setTimeout(() => setShowBadge(true), 2500)
+        }
       }
     } catch (e) {
       console.error('Error saving game data:', e)
@@ -168,6 +183,18 @@ export default function ZenStonesPage() {
           )}
         </AnimatePresence>
       </main>
+
+      <StreakNotification 
+        streak={currentStreak || 3} 
+        show={showStreak} 
+        onClose={() => setShowStreak(false)} 
+      />
+      
+      <BadgeUnlock 
+        show={showBadge} 
+        badgeName="" 
+        onClose={() => setShowBadge(false)} 
+      />
     </div>
   )
 }

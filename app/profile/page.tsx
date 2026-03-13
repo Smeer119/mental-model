@@ -6,6 +6,10 @@ import BottomNav from "@/components/BottomNav";
 import { LogOut, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { getUserStats } from "@/utils/userStats";
+import { getUserActivity } from "@/utils/activity";
+import ActivityHeatmap from "@/components/ActivityHeatmap";
+import StreakFlame from "@/components/StreakFlame";
+import BadgeSystem from "@/components/BadgeSystem";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -19,7 +23,10 @@ export default async function ProfilePage() {
   const fullName = user.user_metadata.full_name || "User";
   const email = user.email;
 
-  const stats = await getUserStats(user.id);
+  const [stats, activity] = await Promise.all([
+    getUserStats(user.id),
+    getUserActivity(user.id)
+  ]);
 
   const handleLogout = async () => {
     'use server'
@@ -66,11 +73,26 @@ export default async function ProfilePage() {
       {/* Stats Cards Section */}
       <div className="px-6 space-y-4">
         <div className="flex space-x-4">
-          <WeeklyCheckIn daysLogged={stats.weeklyCheckIns} />
+          <StreakFlame streak={activity.streak} />
           <TopEmotions emotions={stats.topEmotions} />
         </div>
 
-        {/* Placeholder for more settings/stats */}
+        {/* GitHub style heatmap */}
+        <ActivityHeatmap data={activity.heatmapData} />
+
+        {/* Badge System */}
+        <BadgeSystem badges={activity.allBadges} />
+
+        {/* Weekly Check-in (Move down or combine) */}
+        <div className="flex space-x-4">
+          <WeeklyCheckIn daysLogged={stats.weeklyCheckIns} />
+          <div className="flex-1 bg-white rounded-[2rem] p-6 shadow-sm border border-white flex flex-col justify-center">
+             <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Status</h4>
+             <p className="text-lg font-bold text-emerald-600">Level 5 Mindful</p>
+          </div>
+        </div>
+
+        {/* Settings */}
         <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-white">
           <h3 className="text-gray-900 font-semibold mb-3">Settings</h3>
           <div className="space-y-4">
@@ -78,12 +100,6 @@ export default async function ProfilePage() {
               <span className="text-gray-700 font-medium">Notifications</span>
               <div className="w-12 h-6 bg-green-400 rounded-full relative">
                 <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-gray-50 font-medium text-gray-700">
-              <span>Privacy Mode</span>
-              <div className="w-12 h-6 bg-gray-200 rounded-full relative">
-                <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
               </div>
             </div>
           </div>
