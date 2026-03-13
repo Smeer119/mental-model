@@ -11,6 +11,7 @@ import { getUserStats } from "@/utils/userStats";
 import { getUserActivity } from "@/utils/activity";
 import AnalyticsTimeToggle from "@/components/AnalyticsTimeToggle";
 import MindfulnessRings from "@/components/MindfulnessRings";
+import AnalyticsGate from "@/components/AnalyticsGate";
 
 export default async function AnalyticsPage(
   props: {
@@ -24,6 +25,8 @@ export default async function AnalyticsPage(
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  const isPremium = user.user_metadata?.is_premium;
 
   const [stats, activity, { data: assessments }] = await Promise.all([
     getUserStats(user.id, timeRange),
@@ -43,53 +46,59 @@ export default async function AnalyticsPage(
           <p className="text-sm text-gray-400 font-medium mb-0.5">Overview</p>
           <h1 className="text-2xl font-bold text-gray-900">Your Progress</h1>
         </div>
-        <AnalyticsTimeToggle />
+        {isPremium && <AnalyticsTimeToggle />}
       </div>
 
-      {/* Mindfulness Habit Rings */}
-      <div className="px-6 mb-4">
-        <MindfulnessRings 
-           moods={activity.summaryCounts.moods}
-           games={activity.summaryCounts.games}
-           assessments={activity.summaryCounts.assessments}
-        />
-      </div>
-
-      {/* Mood Trend Chart */}
-      <div className="px-6 mb-4">
-        <MoodTrendChart 
-          trendData={stats.trendData} 
-          weeklyTrendPercentage={stats.weeklyTrendPercentage} 
-        />
-      </div>
-
-      {/* Weekly Check-in + Top Emotions side by side */}
-      <div className="px-6 mb-4 flex gap-4">
-        <WeeklyCheckIn daysLogged={stats.weeklyCheckIns} />
-        <TopEmotions emotions={stats.topEmotions} />
-      </div>
-
-      {/* Weekly Reflection */}
-      <div className="px-6 mb-4">
-        <WeeklyReflection />
-      </div>
-
-      {/* Clinical Assessment History */}
-      <div className="px-6 mb-4 space-y-4">
-        <div className="flex items-center gap-2 mb-2 px-1">
-          <div className="w-8 h-8 bg-blue-100 rounded-xl flex items-center justify-center">
-            <span className="text-xl">📊</span>
+      {!isPremium ? (
+        <AnalyticsGate />
+      ) : (
+        <>
+          {/* Mindfulness Habit Rings */}
+          <div className="px-6 mb-4">
+            <MindfulnessRings 
+               moods={activity.summaryCounts.moods}
+               games={activity.summaryCounts.games}
+               assessments={activity.summaryCounts.assessments}
+            />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Clinical History</h2>
-        </div>
-        <ClinicalHistoryChart data={assessments || []} type="PHQ9" />
-        <ClinicalHistoryChart data={assessments || []} type="GAD7" />
-      </div>
 
-      {/* Games Activity */}
-      <div className="px-6 mb-4">
-        <GamesActivity />
-      </div>
+          {/* Mood Trend Chart */}
+          <div className="px-6 mb-4">
+            <MoodTrendChart 
+              trendData={stats.trendData} 
+              weeklyTrendPercentage={stats.weeklyTrendPercentage} 
+            />
+          </div>
+
+          {/* Weekly Check-in + Top Emotions side by side */}
+          <div className="px-6 mb-4 flex gap-4">
+            <WeeklyCheckIn daysLogged={stats.weeklyCheckIns} />
+            <TopEmotions emotions={stats.topEmotions} />
+          </div>
+
+          {/* Weekly Reflection */}
+          <div className="px-6 mb-4">
+            <WeeklyReflection />
+          </div>
+
+          {/* Clinical Assessment History */}
+          <div className="px-6 mb-4 space-y-4">
+            <div className="flex items-center gap-2 mb-2 px-1">
+              <div className="w-8 h-8 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-xl">📊</span>
+              </div>
+              <h2 className="text-xl font-bold text-slate-900">Clinical History</h2>
+            </div>
+            <ClinicalHistoryChart data={assessments || []} type="PHQ9" />
+            <ClinicalHistoryChart data={assessments || []} type="GAD7" />
+          </div>
+
+          {/* Games Activity */}
+          <div className="px-6 mb-4">
+            <GamesActivity />
+          </div>
+        </>
+      )}
 
       <BottomNav />
     </div>
