@@ -49,7 +49,7 @@ export default function GamesPage() {
       {/* Games List */}
       <div className="px-6 space-y-4">
         {games.map((game, i) => (
-          <Link key={game.id} href={game.link}>
+          <Link key={game.id} href={game.link} className="block mb-4">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import BottomNav from '@/components/BottomNav'
-import { ClipboardList } from 'lucide-react'
+import { ClipboardList, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
 import WellnessRecommendations from '@/components/WellnessRecommendations'
 
@@ -64,33 +64,27 @@ const assessmentCards = [
     content:
       'Mindful breathing and emotional check-ins are your priority this week. Small consistent actions lead to lasting change in your mental well-being.',
   },
-  {
-    id: 6,
-    label: 'Play & Feel Good',
-    emoji: '🎮',
-    bg: 'bg-gradient-to-br from-[#4facfe] to-[#00f2fe]',
-    textColor: 'text-white',
-    labelColor: 'text-white/80',
-    labelBg: 'bg-white/20',
-    content:
-      'Take a break and engage in calming exercises designed to reduce stress and improve focus. Discover the power of play for your wellbeing.',
-    link: '/assessment/games',
-  },
 ]
 
 export default function AssessmentPage() {
   return (
     <div className="pb-28 min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="pt-10 px-6 mb-6">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 bg-slate-200 rounded-2xl flex items-center justify-center">
-            <ClipboardList className="w-5 h-5 text-slate-700" />
+      <div className="pt-10 px-6 mb-6 flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-9 h-9 bg-slate-200 rounded-2xl flex items-center justify-center">
+              <ClipboardList className="w-5 h-5 text-slate-700" />
+            </div>
+            <p className="text-sm text-slate-500 font-medium">Clinical Tools</p>
           </div>
-          <p className="text-sm text-slate-500 font-medium">Clinical Tools</p>
+          <h1 className="text-2xl font-bold text-slate-900">Assessments</h1>
+          <p className="text-slate-500 text-sm mt-1">Track your symptoms over time</p>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900">Assessments</h1>
-        <p className="text-slate-500 text-sm mt-1">Track your symptoms over time</p>
+        
+        <Link href="/assessment/games" className="w-12 h-12 bg-white shadow-sm border border-slate-100 rounded-2xl flex items-center justify-center shrink-0 hover:bg-slate-50 hover:shadow-md transition-all">
+          <Gamepad2 className="w-6 h-6 text-blue-500" />
+        </Link>
       </div>
 
       {/* Recommendations Section */}

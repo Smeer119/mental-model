@@ -164,7 +164,7 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
   return (
     <div className="min-h-screen bg-[#efebf0] flex flex-col font-sans">
       {/* Header & Progress */}
-      <div className="pt-8 px-8 flex flex-col gap-6">
+      <div className="pt-6 px-4 md:pt-8 md:px-8 flex flex-col gap-4 md:gap-6">
         <div className="flex items-center justify-between">
           <button 
             type="button"
@@ -193,7 +193,7 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
         </div>
       </div>
 
-      <main className="flex-1 px-6 flex flex-col items-center justify-center -mt-10">
+      <main className="flex-1 px-4 md:px-6 flex flex-col items-center justify-center -mt-6 md:-mt-10">
         <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-3xl">
           <AnimatePresence mode="wait">
             {currentQuestions.map((q, idx) => (
@@ -205,15 +205,15 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
                 transition={{ duration: 0.4, type: 'spring', bounce: 0.2 }}
                 className="w-full"
               >
-                <div className="mb-12">
-                  <span className="text-[#714efe] font-bold text-xl mb-4 flex items-center gap-2">
+                <div className="mb-8 md:mb-12">
+                  <span className="text-[#714efe] font-bold text-lg md:text-xl mb-3 md:mb-4 flex items-center gap-2">
                     <span className="w-8 h-8 rounded-full bg-[#714efe]/10 flex items-center justify-center">{startIdx + idx + 1}</span> <ArrowLeft className="w-4 h-4 transform rotate-180" />
                   </span>
-                  <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
+                  <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
                     {q.text}
                   </h1>
                   {startIdx === 0 && (
-                     <p className="text-gray-500 mt-4 text-lg md:text-xl font-medium">Over the last 2 weeks, how often have you been bothered by this?</p>
+                     <p className="text-gray-500 mt-3 md:mt-4 text-base sm:text-lg md:text-xl font-medium">Over the last 2 weeks, how often have you been bothered by this?</p>
                   )}
                 </div>
                 
@@ -226,12 +226,12 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
                       <label 
                         key={opt.value}
                         className={`
-                          group relative flex items-center p-4 md:p-6 rounded-[2rem] border-2 transition-all cursor-pointer overflow-hidden
+                          group relative flex items-center p-3 sm:p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border-2 transition-all cursor-pointer overflow-hidden
                           ${isSelected ? 'border-[#714efe] bg-[#714efe]/5' : 'border-transparent bg-white shadow-sm hover:border-[#714efe]/30 hover:shadow-md'}
                         `}
                       >
                         <div className={`
-                          w-8 h-8 md:w-10 md:h-10 rounded-xl mr-6 flex items-center justify-center font-bold text-sm md:text-base transition-colors
+                          w-8 h-8 md:w-10 md:h-10 rounded-xl mr-4 md:mr-6 flex items-center justify-center font-bold text-sm md:text-base transition-colors shrink-0
                           ${isSelected ? 'bg-[#714efe] text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-[#714efe]/10 group-hover:text-[#714efe]'}
                         `}>
                           {letter}
@@ -254,7 +254,7 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
                           className="sr-only" 
                           aria-label={opt.label}
                         />
-                        <span className={`text-lg md:text-xl font-bold ${isSelected ? 'text-[#714efe]' : 'text-gray-700'}`}>
+                        <span className={`text-base sm:text-lg md:text-xl font-bold ${isSelected ? 'text-[#714efe]' : 'text-gray-700'}`}>
                           {opt.label}
                         </span>
                         
@@ -283,7 +283,7 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-8 right-8 z-10"
+            className="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-10"
           >
             {step < totalPages - 1 ? (
               <button 
