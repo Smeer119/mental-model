@@ -18,7 +18,7 @@ const buildSchema = (numQuestions: number) => {
   return z.object(shape)
 }
 
-const QUESTIONS_PER_PAGE = 2
+const QUESTIONS_PER_PAGE = 1
 
 type AssessmentType = 'PHQ9' | 'GAD7'
 
@@ -162,112 +162,150 @@ export default function AssessmentWizard({ type }: AssessmentWizardProps) {
   })
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-[#efebf0] flex flex-col font-sans">
       {/* Header & Progress */}
-      <div className="pt-12 px-6 mb-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="pt-8 px-8 flex flex-col gap-6">
+        <div className="flex items-center justify-between">
           <button 
+            type="button"
             onClick={() => step === 0 ? router.back() : prevStep()} 
-            className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-slate-700 hover:bg-slate-50 transition-colors"
+            className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-700 hover:bg-gray-50 transition-colors"
             aria-label="Go back"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-semibold text-slate-500">
+          <span className="text-sm font-bold text-gray-400 tracking-widest uppercase">
             {type === 'PHQ9' ? 'Depression Screen' : 'Anxiety Screen'}
           </span>
-          <div className="w-10 h-10" /> {/* Spacer */}
+          <div className="w-12 h-12" /> {/* Spacer */}
         </div>
         
-        <div className="bg-slate-200 h-2 rounded-full overflow-hidden">
-          <motion.div 
-            className="h-full bg-slate-800"
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPercent}%` }}
-            transition={{ duration: 0.3 }}
-          />
+        <div className="w-full max-w-3xl mx-auto flex items-center gap-4">
+          <div className="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+            <motion.div 
+              className="h-full bg-[#714efe]"
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+            />
+          </div>
+          <span className="text-xs font-bold text-gray-400">{Math.round(progressPercent)}%</span>
         </div>
-        <p className="text-xs text-slate-500 font-medium mt-3 text-right">{progressPercent}% Completed</p>
       </div>
 
-      <main className="flex-1 px-6 pb-32">
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Over the last 2 weeks,</h1>
-        <p className="text-slate-600 mb-8">how often have you been bothered by the following problems?</p>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-          <AnimatePresence mode="popLayout">
+      <main className="flex-1 px-6 flex flex-col items-center justify-center -mt-10">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-3xl">
+          <AnimatePresence mode="wait">
             {currentQuestions.map((q, idx) => (
-              <motion.section 
+              <motion.div 
                 key={q.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, delay: idx * 0.1 }}
-                className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100"
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 1.05, y: -20 }}
+                transition={{ duration: 0.4, type: 'spring', bounce: 0.2 }}
+                className="w-full"
               >
-                <h3 className="text-lg font-semibold text-slate-800 mb-5 leading-snug">
-                  {startIdx + idx + 1}. {q.text}
-                </h3>
+                <div className="mb-12">
+                  <span className="text-[#714efe] font-bold text-xl mb-4 flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-full bg-[#714efe]/10 flex items-center justify-center">{startIdx + idx + 1}</span> <ArrowLeft className="w-4 h-4 transform rotate-180" />
+                  </span>
+                  <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
+                    {q.text}
+                  </h1>
+                  {startIdx === 0 && (
+                     <p className="text-gray-500 mt-4 text-lg md:text-xl font-medium">Over the last 2 weeks, how often have you been bothered by this?</p>
+                  )}
+                </div>
                 
-                <div className="space-y-3" role="radiogroup" aria-labelledby={`question-${q.id}`}>
-                  {OPTIONS.map((opt) => {
+                <div className="space-y-4" role="radiogroup" aria-labelledby={`question-${q.id}`}>
+                  {OPTIONS.map((opt, optIdx) => {
                     const isSelected = String(watch(q.id)) === String(opt.value)
+                    const letter = String.fromCharCode(65 + optIdx) // A, B, C, D
                     
                     return (
                       <label 
                         key={opt.value}
                         className={`
-                          flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer
-                          ${isSelected ? 'border-slate-800 bg-slate-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'}
+                          group relative flex items-center p-4 md:p-6 rounded-[2rem] border-2 transition-all cursor-pointer overflow-hidden
+                          ${isSelected ? 'border-[#714efe] bg-[#714efe]/5' : 'border-transparent bg-white shadow-sm hover:border-[#714efe]/30 hover:shadow-md'}
                         `}
                       >
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors
-                          ${isSelected ? 'border-slate-800' : 'border-slate-300'}
+                        <div className={`
+                          w-8 h-8 md:w-10 md:h-10 rounded-xl mr-6 flex items-center justify-center font-bold text-sm md:text-base transition-colors
+                          ${isSelected ? 'bg-[#714efe] text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-[#714efe]/10 group-hover:text-[#714efe]'}
                         `}>
-                          {isSelected && <div className="w-2.5 h-2.5 bg-slate-800 rounded-full" />}
+                          {letter}
                         </div>
                         <input 
                           type="radio" 
                           value={opt.value} 
                           {...register(q.id)} 
+                          onChange={(e) => {
+                            register(q.id).onChange(e);
+                            // Auto-advance after a short delay
+                            setTimeout(() => {
+                              if (step < totalPages - 1) {
+                                nextStep();
+                              } else {
+                                handleSubmit(onSubmit)();
+                              }
+                            }, 400);
+                          }}
                           className="sr-only" 
                           aria-label={opt.label}
                         />
-                        <span className={`font-medium ${isSelected ? 'text-slate-900' : 'text-slate-600'}`}>
+                        <span className={`text-lg md:text-xl font-bold ${isSelected ? 'text-[#714efe]' : 'text-gray-700'}`}>
                           {opt.label}
                         </span>
+                        
+                        {isSelected && (
+                          <motion.div
+                            layoutId="outline"
+                            className="absolute inset-0 border-2 border-[#714efe] rounded-[2rem]"
+                            initial={false}
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                          />
+                        )}
                       </label>
                     )
                   })}
                 </div>
-              </motion.section>
+              </motion.div>
             ))}
           </AnimatePresence>
         </form>
       </main>
 
-      {/* Footer Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-6 z-10 flex justify-between">
-        {step < totalPages - 1 ? (
-          <button 
-            type="button"
-            onClick={nextStep}
-            disabled={!canProceed}
-            className="w-full bg-slate-800 hover:bg-slate-900 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors"
+      {/* Footer Navigation (Hidden in typical Typeform, only shown on last step or if user wants to go next manually, but we auto-advance) */}
+      <AnimatePresence>
+        {canProceed && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-8 right-8 z-10"
           >
-            Continue <ChevronRight className="w-5 h-5" />
-          </button>
-        ) : (
-          <button 
-            type="button"
-            onClick={handleSubmit(onSubmit)}
-            disabled={!canProceed || submitting}
-            className="w-full bg-slate-800 hover:bg-slate-900 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors"
-          >
-            {submitting ? 'Submitting...' : 'Submit Assessment'}
-          </button>
+            {step < totalPages - 1 ? (
+              <button 
+                type="button"
+                onClick={nextStep}
+                className="bg-[#714efe] text-white font-bold py-4 px-8 rounded-[2rem] shadow-lg shadow-purple-500/30 flex items-center gap-2 hover:bg-[#5d3fd3] transition-colors"
+              >
+                Press Enter <ChevronRight className="w-5 h-5" />
+              </button>
+            ) : (
+              <button 
+                type="button"
+                onClick={handleSubmit(onSubmit)}
+                disabled={submitting}
+                className="bg-[#714efe] text-white font-bold py-4 px-8 rounded-[2rem] shadow-lg shadow-purple-500/30 flex items-center gap-2 hover:bg-[#5d3fd3] transition-colors"
+               >
+                {submitting ? 'Submitting...' : 'Submit Assessment'}
+              </button>
+            )}
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   )
 }

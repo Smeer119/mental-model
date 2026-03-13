@@ -15,7 +15,15 @@ const games = [
     color: 'from-blue-400 to-cyan-400',
     link: '/assessment/games/breathing',
   },
-  // Add more games here in the future
+  {
+    id: 'grounding',
+    title: '5-4-3-2-1 Grounding',
+    description: 'A sensory technique to bring you back to the present moment.',
+    emoji: '🧘',
+    icon: Gamepad2,
+    color: 'from-purple-400 to-pink-400',
+    link: '/assessment/games/grounding',
+  },
 ]
 
 export default function GamesPage() {
