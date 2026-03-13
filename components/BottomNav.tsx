@@ -28,9 +28,15 @@ export default function BottomNav() {
         </Link>
         
         {/* 2. Assessment */}
-        <button className="flex items-center justify-center w-[3.25rem] h-[3.25rem] rounded-[1.25rem] text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-colors">
+        <Link
+          href="/assessment"
+          className={cn(
+            "flex items-center justify-center w-[3.25rem] h-[3.25rem] rounded-[1.25rem] transition-colors",
+            pathname === "/assessment" ? "text-[#7a5af8] bg-white/50" : "text-gray-400 hover:text-gray-900 hover:bg-black/5"
+          )}
+        >
           <ClipboardList className="w-[1.6rem] h-[1.6rem]" strokeWidth={2.5} />
-        </button>
+        </Link>
 
         {/* 3. Finn AI (Middle, Highlighted) */}
         <Link 
@@ -44,14 +50,26 @@ export default function BottomNav() {
         </Link>
 
         {/* 4. Analysis */}
-        <button className="flex items-center justify-center w-[3.25rem] h-[3.25rem] rounded-[1.25rem] text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-colors">
+        <Link
+          href="/analytics"
+          className={cn(
+            "flex items-center justify-center w-[3.25rem] h-[3.25rem] rounded-[1.25rem] transition-colors",
+            pathname === "/analytics" ? "text-[#7a5af8] bg-white/50" : "text-gray-400 hover:text-gray-900 hover:bg-black/5"
+          )}
+        >
           <BarChart2 className="w-[1.6rem] h-[1.6rem]" strokeWidth={2.5} />
-        </button>
+        </Link>
 
         {/* 5. Profile */}
-        <button className="flex items-center justify-center w-[3.25rem] h-[3.25rem] rounded-[1.25rem] text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-colors">
+        <Link 
+          href="/profile" 
+          className={cn(
+            "flex items-center justify-center w-[3.25rem] h-[3.25rem] rounded-[1.25rem] transition-colors",
+            pathname === "/profile" ? "text-[#7a5af8] bg-white/50" : "text-gray-400 hover:text-gray-900 hover:bg-black/5"
+          )}
+        >
           <User className="w-[1.6rem] h-[1.6rem]" strokeWidth={2.5} />
-        </button>
+        </Link>
       </div>
     </nav>
   );

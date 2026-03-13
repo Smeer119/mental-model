@@ -25,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${outfit.variable} font-sans antialiased text-[#1c1c1e]`}>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning className={`${outfit.variable} font-sans antialiased text-[#1c1c1e]`}>
         <div className="mx-auto max-w-md min-h-screen bg-[#efebf0] relative shadow-2xl overflow-hidden">
           {children}
         </div>
