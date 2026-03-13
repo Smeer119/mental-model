@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, RefreshCw, Star } from 'lucide-react'
 import Link from 'next/link'
@@ -26,12 +26,20 @@ export default function ZenStonesPage() {
   const [showStreak, setShowStreak] = useState(false)
   const [showBadge, setShowBadge] = useState(false)
   const [currentStreak, setCurrentStreak] = useState(0)
+  const isMounted = useRef(true)
   const supabase = createClient()
+
+  useEffect(() => {
+    isMounted.current = true
+    return () => { isMounted.current = false }
+  }, [])
 
   useEffect(() => {
     let timer: NodeJS.Timeout
     if (isStarted && !showSummary) {
-      timer = setInterval(() => setDuration((prev) => prev + 1), 1000)
+      timer = setInterval(() => {
+        if (isMounted.current) setDuration((prev) => prev + 1)
+      }, 1000)
     }
     return () => clearInterval(timer)
   }, [isStarted, showSummary])
@@ -42,7 +50,9 @@ export default function ZenStonesPage() {
     if (stackedCount < STONES.length) {
       setStackedCount(s => s + 1)
       if (stackedCount + 1 === STONES.length) {
-        setTimeout(() => finishExercise(), 1500)
+        setTimeout(() => {
+          if (isMounted.current) finishExercise()
+        }, 1500)
       }
     }
   }
@@ -55,10 +65,11 @@ export default function ZenStonesPage() {
   }
 
   const finishExercise = async () => {
+    if (!isMounted.current) return
     setShowSummary(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
+      if (user && isMounted.current) {
         const gameData = {
           user_id: user.id,
           game_id: "stones_01",
@@ -66,16 +77,15 @@ export default function ZenStonesPage() {
           breaths_completed: STONES.length,
           duration_seconds: duration,
         }
-        const { error } = await supabase.from('game_logs').insert(gameData)
+        await supabase.from('game_logs').insert(gameData)
         
-        // Simulate streak/badge logic for demo
-        // In a real app we'd fetch this or calculate it
-        setCurrentStreak(prev => (prev || 0) + 1)
-        setShowStreak(true)
-        
-        // 1 in 3 chance of badge for demo
-        if (Math.random() > 0.6) {
-          setTimeout(() => setShowBadge(true), 2500)
+        if (isMounted.current) {
+          setCurrentStreak(prev => (prev || 0) + 1)
+          setShowStreak(true)
+          
+          setTimeout(() => {
+            if (isMounted.current) setShowBadge(true)
+          }, 2500)
         }
       }
     } catch (e) {

@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { Award, Flame, Zap, Feather, Sun, Moon, Cloud, Trophy, LucideIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import BadgeShield from './BadgeShield'
 
 interface BadgeUnlockProps {
@@ -22,12 +22,12 @@ const BADGE_POOL = [
 ]
 
 export default function BadgeUnlock({ badgeName, show, onClose }: BadgeUnlockProps) {
-  const [selectedBadge, setSelectedBadge] = useState(BADGE_POOL[0])
+  const selectedBadge = useMemo(() => {
+    return BADGE_POOL[Math.floor(Math.random() * BADGE_POOL.length)]
+  }, [show])
 
   useEffect(() => {
     if (show) {
-      const random = BADGE_POOL[Math.floor(Math.random() * BADGE_POOL.length)]
-      setSelectedBadge(random)
       const timer = setTimeout(onClose, 5000)
       return () => clearTimeout(timer)
     }
