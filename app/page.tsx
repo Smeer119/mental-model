@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import Header from "@/components/Header";
 import MoodSelector from "@/components/MoodSelector";
+import WellnessRecommendations from "@/components/WellnessRecommendations";
 import HeroCard from "@/components/HeroCard";
 import AICard from "@/components/AICard";
 import EnergySection from "@/components/EnergySection";
@@ -30,6 +31,12 @@ export default async function Home() {
       </div>
 
       <MoodSelector />
+      
+      <div className="mt-4 mb-2">
+        <h2 className="px-6 text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Daily Tips</h2>
+        <WellnessRecommendations />
+      </div>
+
       <HeroCard />
       <AICard />
       <EnergySection />

@@ -2,6 +2,7 @@ import MoodTrendChart from "@/components/MoodTrendChart";
 import WeeklyCheckIn from "@/components/WeeklyCheckIn";
 import TopEmotions from "@/components/TopEmotions";
 import WeeklyReflection from "@/components/WeeklyReflection";
+import GamesActivity from "@/components/GamesActivity";
 import BottomNav from "@/components/BottomNav";
 import { ChevronDown } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
@@ -52,6 +53,11 @@ export default async function AnalyticsPage() {
       {/* Weekly Reflection */}
       <div className="px-6 mb-4">
         <WeeklyReflection />
+      </div>
+
+      {/* Games Activity */}
+      <div className="px-6 mb-4">
+        <GamesActivity />
       </div>
 
       <BottomNav />
