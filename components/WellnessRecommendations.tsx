@@ -64,9 +64,9 @@ const recommendations = [
 export default function WellnessRecommendations() {
   return (
     <div className="w-full">
-      <div className="flex overflow-x-auto pb-4 px-6 gap-4 no-scrollbar">
+      <div className="flex overflow-x-auto pb-4 px-6 gap-4 no-scrollbar items-stretch">
         {recommendations.map((item, index) => (
-          <Link key={item.id} href={item.link}>
+          <Link key={item.id} href={item.link} className="flex-shrink-0 w-64 flex">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -78,13 +78,13 @@ export default function WellnessRecommendations() {
                 stiffness: 400,
                 damping: 17
               }}
-              className={`flex-shrink-0 w-64 p-5 rounded-[2rem] bg-gradient-to-br ${item.bgGradient} shadow-sm border border-white/50 active:shadow-inner transition-shadow`}
+              className={`flex-1 w-full p-5 rounded-[2rem] bg-gradient-to-br ${item.bgGradient} shadow-sm border border-white/50 active:shadow-inner transition-shadow flex flex-col`}
             >
               <div className={`w-10 h-10 rounded-2xl ${item.color} flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform`}>
                 {item.icon}
               </div>
               <h3 className="text-gray-900 font-semibold text-sm mb-1">{item.title}</h3>
-              <p className="text-gray-600 text-xs leading-relaxed">{item.description}</p>
+              <p className="text-gray-600 text-xs leading-relaxed flex-1">{item.description}</p>
               
               {item.link === '#' && (
                 <div className="mt-3 inline-flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
