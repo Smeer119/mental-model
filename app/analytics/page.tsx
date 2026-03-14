@@ -46,21 +46,17 @@ export default async function AnalyticsPage(
           <p className="text-sm text-gray-400 font-medium mb-0.5">Overview</p>
           <h1 className="text-2xl font-bold text-gray-900">Your Progress</h1>
         </div>
-        {isPremium && <AnalyticsTimeToggle />}
+        <AnalyticsTimeToggle />
       </div>
 
-      {!isPremium ? (
-        <AnalyticsGate />
-      ) : (
-        <>
-          {/* Mindfulness Habit Rings */}
-          <div className="px-6 mb-4">
-            <MindfulnessRings 
-               moods={activity.summaryCounts.moods}
-               games={activity.summaryCounts.games}
-               assessments={activity.summaryCounts.assessments}
-            />
-          </div>
+      {/* Mindfulness Habit Rings */}
+      <div className="px-6 mb-4">
+        <MindfulnessRings 
+           moods={activity.summaryCounts.moods}
+           games={activity.summaryCounts.games}
+           assessments={activity.summaryCounts.assessments}
+        />
+      </div>
 
           {/* Mood Trend Chart */}
           <div className="px-6 mb-4">
@@ -93,12 +89,10 @@ export default async function AnalyticsPage(
             <ClinicalHistoryChart data={assessments || []} type="GAD7" />
           </div>
 
-          {/* Games Activity */}
-          <div className="px-6 mb-4">
-            <GamesActivity />
-          </div>
-        </>
-      )}
+      {/* Games Activity */}
+      <div className="px-6 mb-4">
+        <GamesActivity />
+      </div>
 
       <BottomNav />
     </div>

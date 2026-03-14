@@ -16,6 +16,7 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("Puck");
   const scrollRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -30,12 +31,13 @@ export default function ChatPage() {
   }, [messages, isTyping]);
 
   const handleSend = async (text: string = input) => {
-    if (!text.trim()) return;
+    if (!text.trim() || isSending) return;
 
     const userMsg = { role: "user" as const, text };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsTyping(true);
+    setIsSending(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -44,26 +46,25 @@ export default function ChatPage() {
         body: JSON.stringify({ 
           message: text, 
           history: messages,
-          voice: selectedVoice 
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch AI response");
+      // Always parse the JSON - our API returns error details even on error status
+      const data = await response.json();
+
+      if (!response.ok || !data.response) {
+        setMessages((prev) => [...prev, { role: "ai", text: data.response || "Something went wrong. Please try again." }]);
+        return;
       }
 
-      const data = await response.json();
       setMessages((prev) => [...prev, { role: "ai", text: data.response }]);
-      
-      // Play audio from Gemini if returned
-      if (data.audio) {
-        playAudio(data.audio);
-      }
+
     } catch (error) {
       console.error("Error sending message:", error);
-      setMessages((prev) => [...prev, { role: "ai", text: "I'm sorry, I'm having trouble connecting right now. Make sure your API key is set." }]);
+      setMessages((prev) => [...prev, { role: "ai", text: "I'm having trouble connecting. Please check the server logs." }]);
     } finally {
       setIsTyping(false);
+      setIsSending(false);
     }
   };
 
@@ -84,6 +85,7 @@ export default function ChatPage() {
   };
 
   const toggleListening = () => {
+    if (isSending) return; // Don't allow mic while sending
     if (!isListening) {
       startListening();
     } else {
@@ -282,8 +284,9 @@ export default function ChatPage() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Tell me what's on your mind..."
+              onKeyPress={(e) => e.key === "Enter" && !isSending && handleSend()}
+              placeholder={isSending ? "Finn is thinking..." : "Tell me what's on your mind..."}
+              disabled={isSending}
               className="w-full bg-white border border-gray-100/50 rounded-2xl py-4 pl-5 pr-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus:outline-none focus:ring-2 focus:ring-[#cbbcf6]/50 transition-all text-gray-700 placeholder:text-gray-400 font-light"
             />
             <button
@@ -299,7 +302,7 @@ export default function ChatPage() {
           
           <button
             onClick={() => handleSend()}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isSending}
             className="p-4 rounded-2xl bg-[#6c5ce7] text-white disabled:bg-gray-200 disabled:text-gray-400 shadow-lg shadow-[#6c5ce7]/20 transition-all hover:scale-105 active:scale-95 flex-shrink-0"
           >
             <Send className="w-5 h-5" />

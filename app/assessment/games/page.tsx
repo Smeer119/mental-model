@@ -1,10 +1,10 @@
+"use client"
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ChevronLeft, Wind, Gamepad2, Lock } from 'lucide-react'
+import { ChevronLeft, Wind, Gamepad2 } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 import { createClient } from '@/utils/supabase/client'
-import PremiumModal from '@/components/PremiumModal'
 
 const allGames = [
   {
@@ -35,7 +35,7 @@ const allGames = [
     icon: Gamepad2,
     color: 'from-sky-300 to-indigo-300',
     link: '/assessment/games/bubble',
-    isPremium: true,
+    isPremium: false,
   },
   {
     id: 'shredder',
@@ -45,7 +45,7 @@ const allGames = [
     icon: Gamepad2,
     color: 'from-rose-400 to-red-400',
     link: '/assessment/games/shredder',
-    isPremium: true,
+    isPremium: false,
   },
   {
     id: 'stones',
@@ -55,25 +55,11 @@ const allGames = [
     icon: Gamepad2,
     color: 'from-stone-400 to-stone-600',
     link: '/assessment/games/stones',
-    isPremium: true,
+    isPremium: false,
   },
 ]
 
 export default function GamesPage() {
-  const [isPremium, setIsPremium] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const supabase = createClient()
-
-  useEffect(() => {
-    async function checkPremium() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user?.user_metadata?.is_premium) {
-        setIsPremium(true)
-      }
-    }
-    checkPremium()
-  }, [])
-
   return (
     <div className="pb-28 min-h-screen bg-[#efebf0] relative overflow-hidden">
       {/* Background Beamlight */}
@@ -99,38 +85,28 @@ export default function GamesPage() {
       {/* Games List */}
       <div className="px-6 space-y-4">
         {allGames.map((game, i) => {
-          const locked = game.isPremium && !isPremium
-          
-          const content = (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`bg-white rounded-[2rem] p-6 shadow-sm border border-white hover:shadow-md transition-all group relative overflow-hidden ${locked ? 'opacity-80 cursor-pointer' : ''}`}
-              onClick={locked ? () => setIsModalOpen(true) : undefined}
-            >
-              {locked && (
-                <div className="absolute top-4 right-4 w-8 h-8 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-purple-600" />
+          return (
+            <Link key={game.id} href={game.link} className="block mb-4">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="bg-white rounded-[2rem] p-6 shadow-sm border border-white hover:shadow-md transition-all group relative overflow-hidden"
+              >
+                <div className="flex items-center gap-5">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${game.color} rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-blue-500/10`}>
+                    {game.emoji}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-500 transition-colors">
+                      {game.title}
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">{game.description}</p>
+                  </div>
                 </div>
-              )}
-              <div className="flex items-center gap-5">
-                <div className={`w-16 h-16 bg-gradient-to-br ${game.color} rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-blue-500/10 ${locked ? 'grayscale-[0.5]' : ''}`}>
-                  {game.emoji}
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-500 transition-colors">
-                    {game.title}
-                    {game.isPremium && <span className="ml-2 text-[10px] bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full uppercase tracking-wider font-black align-middle">PRO</span>}
-                  </h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{game.description}</p>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           )
-
-          if (locked) return <div key={game.id}>{content}</div>
-          return <Link key={game.id} href={game.link} className="block mb-4">{content}</Link>
         })}
 
         <motion.div
@@ -143,7 +119,6 @@ export default function GamesPage() {
         </motion.div>
       </div>
 
-      <PremiumModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <BottomNav />
     </div>
   )
