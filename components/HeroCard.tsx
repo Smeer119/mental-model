@@ -14,22 +14,15 @@ export default function HeroCard() {
         </button>
       </div>
 
-      {/* CSS representation of "Finn" the blob */}
-      <div className="absolute right-[-20px] -bottom-4 w-44 h-44 z-0 flex flex-col pt-12 items-center">
+      {/* Using mascot.png instead of CSS blob */}
+      <div className="absolute right-[-10px] -bottom-4 w-44 h-44 z-0 flex items-center justify-center">
         {/* Glow behind Finn */}
-        <div className="absolute top-10 w-32 h-32 bg-white/30 rounded-full blur-2xl"></div>
-        
-        {/* Finn Body */}
-        <div className="relative w-28 h-[120px] bg-gradient-to-b from-[#a3b2f8] via-[#8fa3f8] to-[#714efe] rounded-t-full shadow-inner flex flex-col items-center pt-8">
-          {/* Eyes */}
-          <div className="flex space-x-5 mb-2 relative z-10">
-            <div className="w-3.5 h-3.5 bg-gray-900 rounded-full shadow-sm"></div>
-            <div className="w-3.5 h-3.5 bg-gray-900 rounded-full shadow-sm"></div>
-          </div>
-          {/* Smile */}
-          <div className="w-5 h-2.5 border-b-[3px] border-gray-900 rounded-b-full relative z-10"></div>
-        </div>
-        <div className="relative w-40 h-[60px] -mt-10 bg-gradient-to-b from-[#8fa3f8] to-[#714efe] rounded-full blur-[1px]"></div>
+        <div className="absolute w-32 h-32 bg-white/30 rounded-full blur-2xl"></div>
+        <img 
+          src="/mascot.png" 
+          alt="Finn Mascot" 
+          className="relative z-10 w-40 h-40 object-contain drop-shadow-xl" 
+        />
       </div>
     </div>
   );

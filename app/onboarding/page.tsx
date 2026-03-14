@@ -10,7 +10,7 @@ const steps = [
   {
     title: "Hi there, I'm Finn!",
     description: "I'm your personal companion for mental wellbeing. Let's start your journey to a calmer mind.",
-    icon: <Heart className="w-6 h-6 text-rose-500" />,
+    icon: <img src="/mascot.png" className="w-8 h-8 object-contain" />,
     pose: 'happy' as const,
     color: 'from-blue-400 to-indigo-600',
     bgColor: 'bg-[#f0f4ff]'
@@ -18,7 +18,7 @@ const steps = [
   {
     title: "Express Yourself",
     description: "Check in with your emotions daily. We'll track your patterns and help you understand your mind better.",
-    icon: <Sparkles className="w-6 h-6 text-amber-500" />,
+    icon: <img src="/mascot.png" className="w-8 h-8 object-contain" />,
     pose: 'neutral' as const,
     color: 'from-purple-400 to-pink-600',
     bgColor: 'bg-[#fff0f6]'
@@ -26,7 +26,7 @@ const steps = [
   {
     title: "Play to Relax",
     description: "Engage in quick, science-backed games that help reduce cortisol and bring you back to center.",
-    icon: <Zap className="w-6 h-6 text-blue-500" />,
+    icon: <img src="/mascot.png" className="w-8 h-8 object-contain" />,
     pose: 'thinking' as const,
     color: 'from-cyan-400 to-blue-600',
     bgColor: 'bg-[#f0f9ff]'
@@ -34,7 +34,7 @@ const steps = [
   {
     title: "Build Habits",
     description: "Earn streaks, unlock rare badges, and celebrate your persistence. Mental health is a daily practice!",
-    icon: <Sparkles className="w-6 h-6 text-yellow-500" />,
+    icon: <img src="/mascot.png" className="w-8 h-8 object-contain" />,
     pose: 'happy' as const,
     color: 'from-orange-400 to-rose-600',
     bgColor: 'bg-[#fff8f0]'

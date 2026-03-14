@@ -42,11 +42,15 @@ export default function BottomNav() {
         <Link 
           href="/chat" 
           className={cn(
-            "flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-[#8fa3f8] to-[#714efe] text-white shadow-lg transition-transform active:scale-95 border-2 border-[#e4e1e6]/90 relative -top-3",
+            "flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-[#8fa3f8] to-[#714efe] shadow-lg transition-transform active:scale-95 border-2 border-[#e4e1e6]/90 relative -top-3",
             pathname === "/chat" && "scale-110 shadow-[0_0_20px_rgba(113,78,254,0.4)]"
           )}
         >
-          <Brain className="w-6 h-6" strokeWidth={2.5} />
+          <img 
+            src="/mascot.png" 
+            alt="Finn AI" 
+            className="w-10 h-10 object-contain" 
+          />
         </Link>
 
         {/* 4. Analysis */}
