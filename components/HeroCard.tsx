@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Play } from "lucide-react";
 
 export default function HeroCard() {
@@ -8,10 +9,12 @@ export default function HeroCard() {
         <p className="text-white/80 text-[15px] leading-snug mb-5 font-medium pr-4">
           Let's get started with a quick mood check.
         </p>
-        <button className="flex items-center space-x-2 bg-white text-[#714efe] px-4 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:bg-gray-50 transition-colors">
-          <span>Check in</span>
-          <Play fill="currentColor" className="w-3.5 h-3.5" />
-        </button>
+        <Link href="/chat">
+          <button className="flex items-center space-x-2 bg-white text-[#714efe] px-4 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:bg-gray-50 transition-colors">
+            <span>Check in</span>
+            <Play fill="currentColor" className="w-3.5 h-3.5" />
+          </button>
+        </Link>
       </div>
 
       {/* Using mascot.png instead of CSS blob */}
