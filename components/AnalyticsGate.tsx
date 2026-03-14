@@ -39,9 +39,9 @@ export default function AnalyticsGate() {
 
       <button
         onClick={() => setIsModalOpen(true)}
-        className="w-full max-w-xs py-4 bg-[#714efe] text-white rounded-2xl font-bold text-lg shadow-lg shadow-purple-500/30 hover:bg-[#5f3ddb] transition-all flex items-center justify-center gap-2"
+        className="w-full max-w-xs py-5 bg-black text-white rounded-[1.5rem] font-black uppercase tracking-widest text-sm shadow-xl hover:bg-gray-900 transition-all flex items-center justify-center gap-2"
       >
-        Notify Me <Zap className="w-5 h-5 fill-white" />
+        Unlock Premium <Zap className="w-4 h-4 fill-white" strokeWidth={0} />
       </button>
 
       <PremiumModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
