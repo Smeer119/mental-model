@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { FINN_SYSTEM_PROMPT } from "@/lib/finn-prompt";
 
 // In-flight request guard — only one AI call at a time server-side
 let isProcessing = false;
@@ -45,12 +46,7 @@ export async function POST(req: Request) {
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {
         role: "system",
-        content:
-          "You are Finn, a calm, empathetic, and insightful AI companion for a mental wellness app. " +
-          "Your primary goal is to make users feel heard and understood. " +
-          "Instead of giving generic advice, always ask ONE thoughtful follow-up question to understand the user's situation better. " +
-          "Be concise, warm, and non-judgmental. Speak in the same language as the user. " +
-          "Keep responses under 150 words."
+        content: FINN_SYSTEM_PROMPT,
       },
       // Map prior conversation history
       ...history.map((msg: { role: string; text: string }) => ({
